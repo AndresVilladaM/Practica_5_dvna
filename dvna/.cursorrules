@@ -1,0 +1,10 @@
+# Reglas de seguridad (Node.js / Express / Sequelize / EJS)
+- Nunca concatenes entrada del usuario en consultas SQL; usa los métodos de Sequelize (where, replacements o bind).
+- No uses child_process.exec ni un shell con entrada del usuario; usa execFile con argumentos separados y valida con lista permitida.
+- Valida tipo, longitud y formato de toda entrada de req.body, req.query y req.params antes de usarla.
+- No escribas secretos, tokens ni contraseñas en el código; léelos de process.env y falla al arrancar si faltan. Nunca subas .env.
+- No uses eval, new Function, node-serialize ni deserialización de datos no confiables.
+- No agregues dependencias sin comprobar que existen, que están mantenidas y que snyk_sca_scan no reporta hallazgos high/critical. No inventes nombres de paquetes.
+- Usa sintaxis EJS 3: <%- include('ruta') %> y escapa las salidas con <%= %>.
+- Tras cambiar código, ejecuta snyk_code_scan; tras cambiar dependencias, snyk_sca_scan. Reporta los hallazgos nuevos antes de dar la tarea por terminada.
+- Muestra el diff y espera aprobación humana antes de aplicar cualquier cambio de seguridad.

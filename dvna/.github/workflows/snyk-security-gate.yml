@@ -1,0 +1,26 @@
+name: Snyk Security Gate
+on:
+  pull_request:
+    branches: [master]
+permissions:
+  contents: read
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Instalar dependencias desde el lockfile
+        run: npm ci --ignore-scripts --legacy-peer-deps
+      - name: Instalar Snyk CLI
+        run: npm install -g snyk
+      - name: SCA (bloquea con severidad crítica)
+        run: snyk test --severity-threshold=critical
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: SAST (bloquea con severidad alta)
+        run: snyk code test --severity-threshold=high
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
